@@ -2,10 +2,13 @@
 from pathlib import Path
 import joblib
 import sqlite3
+import os
 from .utils import normalize_url, suggest_closest_whitelist, extract_domain_parts, is_ip
 
+# Get directory of this file
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # MODEL path (use raw string)
-MODEL_PATH = Path(r"D:\phish-guardian\backend\models\model.pkl")
+MODEL_PATH = os.path.join(BASE_DIR, "models", "model.pkl")
 
 # Load model with joblib (safer for sklearn artifacts)
 try:
