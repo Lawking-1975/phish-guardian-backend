@@ -16,6 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 origins = [
     "http://localhost:5173",  # React dev server
     "http://127.0.0.1:5173"
+    "https://phish-guardian-backend-sfp9.vercel.app/"
 ]
 
 app.add_middleware(
