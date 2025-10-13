@@ -62,6 +62,19 @@ def init_db():
     """)
     conn.commit()
     conn.close()
+def init_whitelist():
+    conn = get_connection()
+    c = conn.cursor()
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS whitelist (
+        official_domain TEXT,
+        category TEXT,
+        canonical_url TEXT
+    )
+    """)
+    conn.commit()
+    conn.close()
+
 
 def load_whitelist():
     init_db()  # ensure table exists

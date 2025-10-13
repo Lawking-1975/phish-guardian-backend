@@ -10,6 +10,19 @@ def get_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+def init_whitelist():
+    conn = get_connection()
+    c = conn.cursor()
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS whitelist (
+            official_domain TEXT,
+            category TEXT,
+            canonical_url TEXT
+        )
+    """)
+    conn.commit()
+    conn.close()
+
 def create_tables():
     with get_connection() as conn:
         c = conn.cursor()
