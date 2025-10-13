@@ -1,0 +1,104 @@
+official_domain,category,notes,canonical_url
+# --- Government ---
+india.gov.in,government,National Portal of India,https://www.india.gov.in
+uidai.gov.in,government,Aadhaar official site,https://uidai.gov.in
+meity.gov.in,government,Ministry of Electronics & IT,https://www.meity.gov.in
+mha.gov.in,government,Ministry of Home Affairs,https://www.mha.gov.in
+incometax.gov.in,government,Income Tax Department,https://www.incometax.gov.in
+cbic.gov.in,government,Central Board of Indirect Taxes,https://cbic.gov.in
+pmindia.gov.in,government,Prime Minister’s Office,https://www.pmindia.gov.in
+rbi.org.in,government,Reserve Bank of India,https://www.rbi.org.in
+sebi.gov.in,government,Securities and Exchange Board of India,https://www.sebi.gov.in
+niti.gov.in,government,NITI Aayog,https://www.niti.gov.in
+mygov.in,government,Government citizen portal,https://www.mygov.in
+passportindia.gov.in,government,Official passport portal,https://www.passportindia.gov.in
+epfindia.gov.in,government,Employees Provident Fund,https://www.epfindia.gov.in
+digilocker.gov.in,government,DigiLocker service,https://www.digilocker.gov.in
+tn.gov.in,government,Tamil Nadu State Portal,https://www.tn.gov.in
+cm.tn.gov.in,government,Chief Minister’s Office Tamil Nadu,https://www.tn.gov.in
+financedept.tn.gov.in,government,Finance Department Tamil Nadu,https://financedept.tn.gov.in/en/
+tnhealth.tn.gov.in,government,Health & Family Welfare Department TN,https://www.tnhealth.tn.gov.in
+umisfees.tnega.org,government,Tamil Nadu Unified Student Scholarship Portal,https://umisfees.tnega.org/
+police.tn.gov.in,government,Tamil Nadu Police,https://www.police.tn.gov.in/citizenportal
+tnpdcl.org,government,Tamil Nadu Electricity Board (TNEB),https://www.tnpdcl.org/.
+parivahan.gov.in,government,Ministry of Road Transport Highways,https://parivahan.gov.in/
+cybercrime.gov.in,government,Cyber crime Police,https://cybercrime.gov.in/
+sancharsaathi.gov.in,government,Citizen Centric Services,https://www.sancharsaathi.gov.in/
+
+# --- Banking & Finance ---
+sbi.bank.in,banks,State Bank of India,https://sbi.bank.in
+icicibank.com,banks,ICICI Bank,https://www.icicibank.com
+hdfcbank.com,banks,HDFC Bank,https://www.hdfcbank.com
+axisbank.com,banks,Axis Bank,https://www.axisbank.com
+kotak.com,banks,Kotak Mahindra Bank,https://www.kotak.com
+pnbindia.in,banks,Punjab National Bank,https://www.pnbindia.in
+bankofbaroda.bank.in,banks,Bank of Baroda,https://bankofbaroda.bank.in
+canarabank.bank.in,banks,Canara Bank,https://www.canarabank.bank.in
+indianbank.bank.in,banks,Indian Bank,https://indianbank.bank.in/
+unionbankofindia.co.in,banks,Union Bank of India,https://www.unionbankofindia.co.in
+bankofindia.bank.in,banks,Bank of India,https://bankofindia.bank.in/
+idbibank.in,banks,IDBI Bank,https://www.idbibank.in
+indusind.com,banks,IndusInd Bank,https://www.indusind.com
+rblbank.com,banks,RBL Bank,https://www.rblbank.com
+federalbank.co.in,banks,Federal Bank,https://www.federalbank.co.in
+yesbank.in,banks,Yes Bank,https://www.yesbank.in
+tmb.in,banks,Tamilnad Mercantile Bank,https://tmb.in/
+repcobank.com,banks,Repco Bank,https://www.repcobank.com/
+
+# --- Education ---
+ugc.ac.in,education,University Grants Commission,https://www.ugc.ac.in
+cbse.gov.in,education,Central Board of Secondary Education,https://www.cbse.gov.in
+nios.ac.in,education,National Institute of Open Schooling,https://www.nios.ac.in
+aiu.ac.in,education,Association of Indian Universities,https://www.aiu.ac.in
+iitb.ac.in,education,IIT Bombay,https://www.iitb.ac.in
+iitd.ac.in,education,IIT Delhi,https://www.iitd.ac.in
+iitm.ac.in,education,IIT Madras,https://www.iitm.ac.in/
+iitkgp.ac.in,education,IIT Kharagpur,https://www.iitkgp.ac.in/
+iitr.ac.in,education,IIT Roorkee,https://www.iitr.ac.in/
+iisc.ac.in,education,Indian Institute of Science,https://www.iisc.ac.in
+ignou.ac.in,education,Indira Gandhi National Open University,https://www.ignou.ac.in
+klnce.edu,education,KLN College of Engineering,https://www.klnce.edu
+annauniv.edu,education,Anna University,https://www.annauniv.edu
+nitt.edu,education,NIT Trichy,https://www.nitt.edu
+psgtech.edu,education,PSG College of Technology,https://www.psgtech.edu/
+svce.ac.in,education,Sri Venkateswara College of Engineering (SVCE),https://www.svce.ac.in
+alagappauniversity.ac.in,education,Alagappa University,https://www.alagappauniversity.ac.in/
+sficec.in,education,Sfi,http://www.sficec.in/
+marxists.org,education,Marxism,https://www.marxists.org/
+vcet.ac.in,education,Velammal College,https://vcet.ac.in/
+srmist.edu.in,education,SRM University,https://www.srmist.edu.in
+tce.edu,education,Thiagarajar College,https://www.tce.edu/
+americancollege.edu.in,education,The American College,https://americancollege.edu.in/
+
+# --- Healthcare ---
+mohfw.gov.in,health,Ministry of Health and Family Welfare,https://www.mohfw.gov.in
+nhm.gov.in,health,National Health Portal,https://nhm.gov.in/
+aiims.edu,health,AIIMS Delhi,https://www.aiims.edu
+icmr.gov.in,health,Indian Council of Medical Research,https://www.icmr.gov.in
+covid19india.org,health,COVID-19 tracking site,https://www.covid19india.org
+cowin.gov.in,health,COVID vaccination portal,https://www.cowin.gov.in
+velamalhospital.com,health,Velamal Hospital,https://www.velammalhospital.com/index.php
+apollohospitals.com,health,Apollo Hospitals India,https://www.apollohospitals.com
+mehtahospital.com,health,Mehta Hospital Chennai,https://www.mehtahospital.com
+srmhospital.co.in,health,SRM Hospital,https://www.srmhospital.co.in
+gsmch.ac.in,health,Government Sivagangai Medical College and Hospital,https://gsmch.ac.in/
+maduraimedicalcollege.ac.in,health,Madurai Medical College,https://maduraimedicalcollege.ac.in/
+tnmgrmuonline.in,health,The Tamil Nadu Dr.M.G.R.Medical University,https://tnmgrmuonline.in/
+tnhealth.tn.gov.in,health,State Health Dept of Tamil Nadu,https://www.tnhealth.tn.gov.in
+
+# --- E-Commerce / Utilities ---
+amazon.in,ecommerce,Amazon India,https://www.amazon.in
+flipkart.com,ecommerce,Flipkart,https://www.flipkart.com
+snapdeal.com,ecommerce,Snapdeal,https://www.snapdeal.com
+ajio.com,ecommerce,Ajio,https://www.ajio.com/
+www.meesho.com,ecommerce,Meesho,https://www.meesho.com/
+irctc.co.in,utilities,Indian Railway Catering & Tourism,https://www.irctc.co.in
+bsnl.co.in,utilities,Bharat Sanchar Nigam Limited,https://www.bsnl.co.in
+jio.com,utilities,Reliance Jio Infocomm,https://www.jio.com
+airtel.in,utilities,Bharti Airtel,https://www.airtel.in
+indiapost.gov.in,utilities,India Post,https://www.indiapost.gov.in/
+vodafoneidea.com,utilities,Vodafone Idea,https://www.vodafoneidea.com
+delhivery.com,utilities,Delhivery,https://www.delhivery.com/
+dtdc.com,utilities,DTDChttps://www.dtdc.com/in/
+tpcindia.com,utilities,Professional couriers,https://www.tpcindia.com/
+stcourier.com,utilities,ST courier,https://stcourier.com/
