@@ -103,3 +103,10 @@ def predict(item: URLItem):
         raise HTTPException(status_code=500, detail="MODEL not loaded")
     result = predict_url(item.url, MODEL, WHITELIST)
     return result
+@app.get("/")
+def root():
+    return {"message": "Phish Guardian API is running!"}
+
+@app.get("/healthz")
+def health_check():
+    return {"status": "ok"}
