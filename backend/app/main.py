@@ -13,11 +13,12 @@ from backend.app.predict import predict_url
 app = FastAPI(title="Phish Guardian API")
 
 # -------------------------
-# CORS (update with your frontend domain)
+# CORS settings (allow your frontend)
 # -------------------------
 origins = [
-    "http://localhost:5173",
-    "https://phish-guardian-backend-sfp9.vercel.app/"
+    "http://localhost:5173",  # React dev server
+    "http://127.0.0.1:5173",
+   "https://phish-guardian-backend-sfp9.vercel.app/" # Replace with your frontend domain
 ]
 
 app.add_middleware(
@@ -29,26 +30,27 @@ app.add_middleware(
 )
 
 # -------------------------
-# Paths
+# Paths for deployment
 # -------------------------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, "models", "model.pkl")
-DB_PATH = os.path.join(BASE_DIR, "whitelist.db")
+DB_PATH = os.path.join(BASE_DIR, "whitelist.db")  # SQLite DB
+MODEL_PATH = os.path.join(BASE_DIR, "models", "model.pkl")  # ML model
 
 # -------------------------
-# Load ML model
+# Load ML model safely
 # -------------------------
 try:
     MODEL = joblib.load(MODEL_PATH)
     print(f"✅ Loaded ML model from {MODEL_PATH}")
 except Exception as e:
     MODEL = None
-    print(f"❌ Failed to load ML model: {e}")
+    print(f"❌ Failed to load model: {e}")
 
 # -------------------------
-# Initialize whitelist DB
+# Initialize SQLite whitelist safely
 # -------------------------
 def init_db():
+    os.makedirs(BASE_DIR, exist_ok=True)  # Ensure directory exists
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute("""
@@ -63,28 +65,31 @@ def init_db():
 
 def load_whitelist():
     init_db()
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    c = conn.cursor()
-    c.execute("SELECT official_domain, category, canonical_url FROM whitelist")
-    rows = c.fetchall()
-    conn.close()
-    whitelist = [
-        {
-            "domain": r["official_domain"].strip().lower() if r["official_domain"] else "",
-            "category": r["category"].strip() if r["category"] else "",
-            "canonical_url": r["canonical_url"].strip() if r["canonical_url"] else None
-        }
-        for r in rows
-        if r["official_domain"]
-    ]
-    print(f"✅ Loaded {len(whitelist)} whitelist entries")
-    return whitelist
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = sqlite3.Row
+        c = conn.cursor()
+        c.execute("SELECT official_domain, category, canonical_url FROM whitelist")
+        rows = c.fetchall()
+        conn.close()
+        return [
+            {
+                "domain": r["official_domain"].strip().lower() if r["official_domain"] else "",
+                "category": r["category"].strip() if r["category"] else "",
+                "canonical_url": r["canonical_url"].strip() if r["canonical_url"] else None
+            }
+            for r in rows
+            if r["official_domain"]
+        ]
+    except sqlite3.Error as e:
+        print(f"❌ Failed to load whitelist: {e}")
+        return []
 
 WHITELIST = load_whitelist()
+print(f"✅ Loaded {len(WHITELIST)} whitelist entries")
 
 # -------------------------
-# Request model
+# Request body
 # -------------------------
 class URLItem(BaseModel):
     url: str
@@ -98,10 +103,3 @@ def predict(item: URLItem):
         raise HTTPException(status_code=500, detail="MODEL not loaded")
     result = predict_url(item.url, MODEL, WHITELIST)
     return result
-
-# -------------------------
-# Optional: health check
-# -------------------------
-@app.get("/health")
-def health():
-    return {"status": "ok", "model_loaded": MODEL is not None, "whitelist_count": len(WHITELIST)}
