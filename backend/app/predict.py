@@ -13,10 +13,10 @@ MODEL_PATH = os.path.join(BASE_DIR, "models", "model.pkl")
 # Load model with joblib (safer for sklearn artifacts)
 try:
     MODEL = joblib.load(MODEL_PATH)
-    print("✅ ML model loaded successfully (joblib)")
+    print("ML model loaded successfully (joblib)")
 except Exception as e:
     MODEL = None
-    print(f"❌ Failed to load model: {e}")
+    print(f"Failed to load model: {e}")
 
 # -------------------------
 # Feature extraction (same features used in training)

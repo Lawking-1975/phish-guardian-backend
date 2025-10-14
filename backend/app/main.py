@@ -1,21 +1,22 @@
 # backend/app/main.py
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from backend.app.predict import MODEL, predict_url
+from fastapi.middleware.cors import CORSMiddleware
 import sqlite3
 import os
+import joblib
+from backend.app.predict import predict_url
 
 # -------------------------
 # FastAPI app
 # -------------------------
 app = FastAPI(title="Phish Guardian API")
 
-from fastapi.middleware.cors import CORSMiddleware
-
-# Allow frontend origins
+# -------------------------
+# CORS (update with your frontend domain)
+# -------------------------
 origins = [
-    "http://localhost:5173",  # React dev server
-    "http://127.0.0.1:5173"
+    "http://localhost:5173",
     "https://phish-guardian-backend-sfp9.vercel.app/"
 ]
 
@@ -28,31 +29,28 @@ app.add_middleware(
 )
 
 # -------------------------
-# Paths for deployment
+# Paths
 # -------------------------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, "whitelist.db")  # SQLite DB
-MODEL_PATH = os.path.join(BASE_DIR, "models", "model.pkl")  # ML model
+MODEL_PATH = os.path.join(BASE_DIR, "models", "model.pkl")
+DB_PATH = os.path.join(BASE_DIR, "whitelist.db")
 
 # -------------------------
-# Load ML model safely
+# Load ML model
 # -------------------------
-import joblib
-
 try:
     MODEL = joblib.load(MODEL_PATH)
-    print(f"Loaded ML model from {MODEL_PATH}")
+    print(f"✅ Loaded ML model from {MODEL_PATH}")
 except Exception as e:
     MODEL = None
-    print(f"Failed to load model: {e}")
+    print(f"❌ Failed to load ML model: {e}")
 
 # -------------------------
-# Initialize SQLite whitelist
+# Initialize whitelist DB
 # -------------------------
 def init_db():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    # Create table if not exists
     c.execute("""
         CREATE TABLE IF NOT EXISTS whitelist (
             official_domain TEXT,
@@ -62,29 +60,16 @@ def init_db():
     """)
     conn.commit()
     conn.close()
-def init_whitelist():
-    conn = get_connection()
-    c = conn.cursor()
-    c.execute("""
-    CREATE TABLE IF NOT EXISTS whitelist (
-        official_domain TEXT,
-        category TEXT,
-        canonical_url TEXT
-    )
-    """)
-    conn.commit()
-    conn.close()
-
 
 def load_whitelist():
-    init_db()  # ensure table exists
+    init_db()
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
     c.execute("SELECT official_domain, category, canonical_url FROM whitelist")
     rows = c.fetchall()
     conn.close()
-    return [
+    whitelist = [
         {
             "domain": r["official_domain"].strip().lower() if r["official_domain"] else "",
             "category": r["category"].strip() if r["category"] else "",
@@ -93,12 +78,13 @@ def load_whitelist():
         for r in rows
         if r["official_domain"]
     ]
+    print(f"✅ Loaded {len(whitelist)} whitelist entries")
+    return whitelist
 
 WHITELIST = load_whitelist()
-print(f"Loaded {len(WHITELIST)} whitelist entries")
 
 # -------------------------
-# Request body
+# Request model
 # -------------------------
 class URLItem(BaseModel):
     url: str
@@ -112,3 +98,10 @@ def predict(item: URLItem):
         raise HTTPException(status_code=500, detail="MODEL not loaded")
     result = predict_url(item.url, MODEL, WHITELIST)
     return result
+
+# -------------------------
+# Optional: health check
+# -------------------------
+@app.get("/health")
+def health():
+    return {"status": "ok", "model_loaded": MODEL is not None, "whitelist_count": len(WHITELIST)}
