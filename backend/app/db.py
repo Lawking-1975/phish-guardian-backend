@@ -1,71 +1,49 @@
 # backend/app/db.py
 import sqlite3
-from pathlib import Path
+import os
 
-DB_PATH = Path(__file__).resolve().parents[1] / "data" / "urls.db"
-DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "whitelist.db")
 
 def get_connection():
-    conn = sqlite3.connect(str(DB_PATH), check_same_thread=False)
+    """Return a new SQLite connection."""
+    os.makedirs(BASE_DIR, exist_ok=True)
+    conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
-def init_whitelist():
+def create_tables():
     conn = get_connection()
     c = conn.cursor()
+    # Whitelist table
     c.execute("""
         CREATE TABLE IF NOT EXISTS whitelist (
-            official_domain TEXT,
+            official_domain TEXT PRIMARY KEY,
             category TEXT,
+            notes TEXT,
             canonical_url TEXT
+        )
+    """)
+    # Prediction logs
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS urls (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            url TEXT NOT NULL,
+            label INTEGER,
+            confidence REAL,
+            source TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
     conn.commit()
     conn.close()
 
-def create_tables():
-    with get_connection() as conn:
-        c = conn.cursor()
-        c.execute("""
-            CREATE TABLE IF NOT EXISTS urls (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                url TEXT,
-                label INTEGER,
-                confidence REAL,
-                source TEXT,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            )
-        """)
-        c.execute("""
-            CREATE TABLE IF NOT EXISTS whitelist (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                official_domain TEXT UNIQUE,
-                category TEXT,
-                notes TEXT,
-                canonical_url TEXT
-            )
-        """)
-        conn.commit()
-
-def insert_url(url: str, label: int, confidence: float, source: str = "api"):
-    with get_connection() as conn:
-        conn.execute(
-            "INSERT INTO urls (url, label, confidence, source) VALUES (?, ?, ?, ?)",
-            (url, label, confidence, source)
-        )
-        conn.commit()
-
-def insert_whitelist(official_domain: str, category: str, notes: str = "", canonical_url: str = ""):
-    with get_connection() as conn:
-        conn.execute(
-            "INSERT OR IGNORE INTO whitelist (official_domain, category, notes, canonical_url) VALUES (?, ?, ?, ?)",
-            (official_domain.lower(), category, notes, canonical_url)
-        )
-        conn.commit()
-
-def get_whitelist():
-    with get_connection() as conn:
-        c = conn.cursor()
-        c.execute("SELECT official_domain, category, notes, canonical_url FROM whitelist")
-        rows = c.fetchall()
-        return [dict(r) for r in rows]
+def insert_whitelist(domain: str, category: str, notes: str, canonical_url: str):
+    conn = get_connection()
+    c = conn.cursor()
+    c.execute("""
+        INSERT OR IGNORE INTO whitelist (official_domain, category, notes, canonical_url)
+        VALUES (?, ?, ?, ?)
+    """, (domain, category, notes, canonical_url))
+    conn.commit()
+    conn.close()
