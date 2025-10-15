@@ -35,7 +35,8 @@ app.add_middleware(
 # -------------------------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "models", "model.pkl")
-WHITELIST_CSV_PATH = os.path.join(BASE_DIR, "..", "data", "whitelist.csv")  # ../data/whitelist.csv
+DB_PATH = os.path.join(BASE_DIR, "whitelist.db")
+WHITELIST_CSV_PATH = os.path.join(BASE_DIR,"whitelist.csv")
 
 # -------------------------
 # Load ML model
