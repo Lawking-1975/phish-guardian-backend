@@ -19,7 +19,7 @@ app = FastAPI(title="Phish Guardian API")
 origins = [
     "http://localhost:5173",  # React dev server
     "http://127.0.0.1:5173",
-    "https://your-frontend-domain.com"  # replace with actual frontend domain
+    "https://phish-guardian-chi.vercel.app"  # replace with actual frontend domain
 ]
 
 app.add_middleware(
