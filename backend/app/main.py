@@ -5,8 +5,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 import csv
 import joblib
-from app.db import create_tables, insert_whitelist, get_connection
-from app.predict import predict_url
+from .db import create_tables, insert_whitelist, get_connection
+from .predict import predict_url
 
 # -------------------------
 # FastAPI app
