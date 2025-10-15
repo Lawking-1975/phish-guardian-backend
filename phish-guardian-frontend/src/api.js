@@ -3,7 +3,7 @@ import axios from "axios";
 
 // Use Vite environment variable for API base URL if set, fallback to local dev
 const API_BASE =
-  import.meta.env.VITE_API_BASE || "http://127.0.0.1:8000";
+  import.meta.env.VITE_API_BASE || "https://phish-guardian-backend.onrender.com";
 
 /**
  * Send a URL to the backend for phishing prediction.
