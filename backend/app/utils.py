@@ -3,7 +3,7 @@ from urllib.parse import urlparse, urlunparse
 import tldextract
 import ipaddress
 from difflib import get_close_matches, SequenceMatcher
-
+import pandas as pd
 # -------------------------
 # URL Normalization
 # -------------------------
@@ -60,6 +60,10 @@ def suggest_closest_whitelist(url: str, whitelist, n=1, cutoff=0.6):
 # -------------------------
 # Feature extraction for ML
 # -------------------------
+FEATURE_COLUMNS = [
+    "length", "has_ip", "num_dots", "num_hyphens", "contains_https",
+    # add all columns used when training the model
+]
 def extract_features(url: str):
     num_dots = url.count(".")
     url_len = len(url)
