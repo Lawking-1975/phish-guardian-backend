@@ -3,8 +3,10 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import os
-import sqlite3
+import csv
 import joblib
+from app.db import create_tables, insert_whitelist, get_connection
+from app.predict import predict_url
 
 # -------------------------
 # FastAPI app
@@ -15,9 +17,9 @@ app = FastAPI(title="Phish Guardian API")
 # CORS settings
 # -------------------------
 origins = [
-    "http://localhost:5173",
+    "http://localhost:5173",  # React dev server
     "http://127.0.0.1:5173",
-    "https://phish-guardian.vercel.app"
+    "https://your-frontend-domain.com"  # replace with actual frontend domain
 ]
 
 app.add_middleware(
@@ -29,21 +31,69 @@ app.add_middleware(
 )
 
 # -------------------------
+# Paths
+# -------------------------
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "models", "model.pkl")
+WHITELIST_CSV_PATH = os.path.join(BASE_DIR, "..", "data", "whitelist.csv")  # ../data/whitelist.csv
+
+# -------------------------
+# Load ML model
+# -------------------------
+try:
+    MODEL = joblib.load(MODEL_PATH)
+    print(f"✅ Loaded ML model from {MODEL_PATH}")
+except Exception as e:
+    MODEL = None
+    print(f"❌ Failed to load model: {e}")
+
+# -------------------------
+# Initialize database & whitelist
+# -------------------------
+def init_whitelist():
+    """
+    Create tables if missing and populate whitelist from CSV.
+    Returns a list of whitelist entries.
+    """
+    create_tables()  # ensures whitelist & urls tables exist
+    whitelist = []
+    if os.path.exists(WHITELIST_CSV_PATH):
+        with open(WHITELIST_CSV_PATH, newline='', encoding='utf-8') as f:
+            reader = csv.DictReader(filter(lambda row: row.strip() and not row.strip().startswith("#"), f))
+            for row in reader:
+                domain = row.get("official_domain") or ""
+                category = row.get("category") or ""
+                canonical_url = row.get("canonical_url") or ""
+                notes = row.get("notes") or ""
+                if domain:
+                    insert_whitelist(domain.strip().lower(), category.strip(), notes.strip(), canonical_url.strip())
+                    whitelist.append({
+                        "domain": domain.strip().lower(),
+                        "category": category.strip(),
+                        "canonical_url": canonical_url.strip()
+                    })
+    else:
+        print(f"❌ Whitelist CSV not found at {WHITELIST_CSV_PATH}")
+    return whitelist
+
+WHITELIST = init_whitelist()
+print(f"✅ Loaded {len(WHITELIST)} whitelist entries")
+
+# -------------------------
 # Request body
 # -------------------------
 class URLItem(BaseModel):
     url: str
 
 # -------------------------
-# Predict endpoint
+# Endpoints
 # -------------------------
 @app.post("/predict")
 def predict(item: URLItem):
-    from .predict import predict_url  # lazy import to avoid circular issues
-    from app.main import MODEL, WHITELIST  # lazy load
     if MODEL is None:
         raise HTTPException(status_code=500, detail="MODEL not loaded")
-    return predict_url(item.url, MODEL, WHITELIST)
+    result = predict_url(item.url, MODEL, WHITELIST)
+    return result
 
 @app.get("/")
 def root():
@@ -52,38 +102,3 @@ def root():
 @app.get("/healthz")
 def health_check():
     return {"status": "ok"}
-
-# -------------------------
-# Lazy load model and whitelist
-# -------------------------
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, "whitelist.db")
-MODEL_PATH = os.path.join(BASE_DIR, "models", "model.pkl")
-
-try:
-    MODEL = joblib.load(MODEL_PATH)
-    print(f"✅ Loaded ML model from {MODEL_PATH}")
-except Exception as e:
-    MODEL = None
-    print(f"❌ Failed to load model: {e}")
-
-def load_whitelist():
-    try:
-        conn = sqlite3.connect(DB_PATH)
-        conn.row_factory = sqlite3.Row
-        c = conn.cursor()
-        c.execute("SELECT official_domain, category, canonical_url FROM whitelist")
-        rows = c.fetchall()
-        conn.close()
-        return [
-            {"domain": r["official_domain"].strip().lower(),
-             "category": r["category"].strip(),
-             "canonical_url": r["canonical_url"].strip() if r["canonical_url"] else None
-            } for r in rows if r["official_domain"]
-        ]
-    except Exception as e:
-        print(f"❌ Failed to load whitelist: {e}")
-        return []
-
-WHITELIST = load_whitelist()
-print(f"✅ Loaded {len(WHITELIST)} whitelist entries")
